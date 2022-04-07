@@ -3,6 +3,7 @@
 # Description: 
 
 import os
+from turtle import position
 import pygame
 
 class Bubble(pygame.sprite.Sprite):
@@ -17,7 +18,42 @@ class Bubble(pygame.sprite.Sprite):
         self.image = image
         self.color = color
         self.rect = image.get_rect(center = position)
-    
+
+class Arrow(pygame.sprite.Sprite):
+    """
+    Represents a shooting arrow class.
+    """
+    def __init__(self, image, position, angle):
+        """
+        Creates an instance of a shooting arrow.
+        """
+        super().__init__()
+        self.image = image
+        self.rect = image.get_rect(center = position)
+        self.angle = angle
+        self.original = image
+        self.position = position
+
+    def draw(self, screen):
+        """
+        This method receives screen as parameter and draws the arrow object on the screen.
+        """
+        screen.blit(self.image, self.rect)
+
+    def rotate(self, angle):
+        """
+        This method receives angle as parameter and rotates the arrow.
+        """
+        self.angle += angle
+        
+        if self.angle > 170:
+            self.angle = 170
+        elif self.angle < 10:
+            self.angle = 10
+
+        self.image = pygame.transform.rotozoom(self.original, self.angle, 1)
+        self.rect = self.image.get_rect(center = self.position)
+        
 def set_map():
     """
     This function populates the initial map with the bubbles.
@@ -113,10 +149,19 @@ bubble_images = [
     pygame.image.load(os.path.join(path, "yellow.png")).convert_alpha()
 ]
 
+#------------------------
+# Set the shooting arrow.
+#------------------------
+bubble_arrow = pygame.image.load(os.path.join(path, "arrow.png"))
+arrow = Arrow(bubble_arrow, (screen_width // 2, 624), 90)
+
 # Variables/assets/info for the game.
 cell_size = 56
 bubble_width = 56
 bubble_height = 62
+angle_left = 0
+angle_right = 0
+angle_speed = 1.5 # Move the arrow by 1.5 degrees.
 map = []
 bubble_group = pygame.sprite.Group()
 
@@ -129,9 +174,26 @@ while condition:
         if event.type == pygame.QUIT:
             condition = False
 
+        # Move the arrow by 1.5 degrees if the key is pressed.
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                angle_left += angle_speed
+            elif event.key == pygame.K_RIGHT:
+                angle_right -= angle_speed
+
+        # Stop moving the arrow when the key is not pressed.
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                angle_left = 0
+
+            elif event.key == pygame.K_RIGHT:
+                angle_right = 0
+
     # Put the background image at the top left corner.
     screen.blit(background, (0, 0))
     bubble_group.draw(screen)
+    arrow.rotate(angle_left + angle_right)
+    arrow.draw(screen)
     pygame.display.update()
 
 pygame.quit()
