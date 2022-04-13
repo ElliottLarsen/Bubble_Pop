@@ -3,14 +3,14 @@
 # Description: 
 
 import os
-from turtle import position
 import pygame
+import random
 
 class Bubble(pygame.sprite.Sprite):
     """
     Represents a bubble class.
     """
-    def __init__(self, image, color, position):
+    def __init__(self, image, color, position = (0, 0)):
         """
         Creates an instance of a bubble.
         """
@@ -18,6 +18,18 @@ class Bubble(pygame.sprite.Sprite):
         self.image = image
         self.color = color
         self.rect = image.get_rect(center = position)
+
+    def set_rect(self, position):
+        """
+        This method receives position as parameter and sets the class's rect to it.
+        """
+        self.rect = self.image.get_rect(center = position)
+
+    def draw(self, screen):
+        """
+        This method receives screen as parameter and draws the bubble object on the screen.
+        """
+        screen.blit(self.image, self.rect)
 
 class Arrow(pygame.sprite.Sprite):
     """
@@ -118,6 +130,35 @@ def get_bubble_image(color):
     else:
         return bubble_images[0]
 
+def setup_bubbles():
+    """
+    Create and sets up a bubble.
+    """
+    global current_bubble
+    current_bubble = create_bubble()
+    current_bubble.set_rect((screen_width // 2, 624))
+
+def create_bubble():
+    """
+    This function creates a bubble of randomly picked color.
+    """
+    color = get_random_color()
+    image = get_bubble_image(color)
+    
+    return Bubble(image, color)
+
+def get_random_color():
+    """
+    Picks a randome color for the bubble.
+    """
+    colors = []
+    for row in map:
+        for column in row:
+            if column not in colors and column not in [".", "N"]:
+                colors.append(column)
+    
+    return random.choice(colors)
+
 #------------------------------------------
 # Set the default environment for the game.
 #------------------------------------------
@@ -162,6 +203,7 @@ bubble_height = 62
 angle_left = 0
 angle_right = 0
 angle_speed = 1.5 # Move the arrow by 1.5 degrees.
+current_bubble = None # Current bubble placed on the arrow.
 map = []
 bubble_group = pygame.sprite.Group()
 
@@ -189,11 +231,17 @@ while condition:
             elif event.key == pygame.K_RIGHT:
                 angle_right = 0
 
+    if not current_bubble:
+        setup_bubbles()
+
     # Put the background image at the top left corner.
     screen.blit(background, (0, 0))
     bubble_group.draw(screen)
     arrow.rotate(angle_left + angle_right)
     arrow.draw(screen)
+    # Draw a bubble on the arrow.
+    if current_bubble:
+        current_bubble.draw(screen)
     pygame.display.update()
 
 pygame.quit()
