@@ -5,6 +5,7 @@
 import os
 import pygame
 import random
+import math
 
 class Bubble(pygame.sprite.Sprite):
     """
@@ -18,6 +19,7 @@ class Bubble(pygame.sprite.Sprite):
         self.image = image
         self.color = color
         self.rect = image.get_rect(center = position)
+        self.radius = 15
 
     def set_rect(self, position):
         """
@@ -30,6 +32,27 @@ class Bubble(pygame.sprite.Sprite):
         This method receives screen as parameter and draws the bubble object on the screen.
         """
         screen.blit(self.image, self.rect)
+
+    def set_angle(self, angle):
+        """
+        This method receives an angle as parameter and sets the bubble's angle to it (radian).
+        """
+        self.angle = angle
+        self.rad_angle = math.radians(self.angle)
+
+    def move(self):
+        """
+        This method calculates and sets x and y coordinates of the bubble.
+        """
+        x_coord = self.radius * math.cos(self.rad_angle)
+        y_coord = self.radius * math.sin(self.rad_angle) * -1
+
+        self.rect.x += x_coord
+        self.rect.y += y_coord
+
+        # When the bubble hits the wall.
+        if self.rect.left < 0 or self.rect.right > screen_width:
+            self.set_angle(180 - self.angle)
 
 class Arrow(pygame.sprite.Sprite):
     """
@@ -58,10 +81,10 @@ class Arrow(pygame.sprite.Sprite):
         """
         self.angle += angle
         
-        if self.angle > 170:
-            self.angle = 170
-        elif self.angle < 10:
-            self.angle = 10
+        if self.angle > 150:
+            self.angle = 150
+        elif self.angle < 30:
+            self.angle = 30
 
         self.image = pygame.transform.rotozoom(self.original, self.angle, 1)
         self.rect = self.image.get_rect(center = self.position)
@@ -132,11 +155,18 @@ def get_bubble_image(color):
 
 def setup_bubbles():
     """
-    Create and sets up a bubble.
+    Creates and sets up a bubble.
     """
-    global current_bubble
-    current_bubble = create_bubble()
+    global current_bubble, next_bubble
+    
+    if next_bubble:
+        current_bubble = next_bubble
+    else:
+        current_bubble = create_bubble()
+    
     current_bubble.set_rect((screen_width // 2, 624))
+    next_bubble = create_bubble()
+    next_bubble.set_rect((screen_width // 3, 660))
 
 def create_bubble():
     """
@@ -203,7 +233,11 @@ bubble_height = 62
 angle_left = 0
 angle_right = 0
 angle_speed = 1.5 # Move the arrow by 1.5 degrees.
+
 current_bubble = None # Current bubble placed on the arrow.
+next_bubble = None # Next bubble to be placed on the arrow.
+fire = False # Whether the bubble that has been fired is in motion..
+
 map = []
 bubble_group = pygame.sprite.Group()
 
@@ -222,6 +256,12 @@ while condition:
                 angle_left += angle_speed
             elif event.key == pygame.K_RIGHT:
                 angle_right -= angle_speed
+            elif event.key == pygame.K_SPACE:
+                # So that the bubble can be fired only if the current bubble is not None and there is no bubble in motion.
+                if current_bubble and not fire:
+                    fire = True
+                    current_bubble.set_angle(arrow.angle)
+
 
         # Stop moving the arrow when the key is not pressed.
         if event.type == pygame.KEYUP:
@@ -241,7 +281,18 @@ while condition:
     arrow.draw(screen)
     # Draw a bubble on the arrow.
     if current_bubble:
+        if fire:
+            current_bubble.move()
         current_bubble.draw(screen)
+
+        # Needs to be updated after working out popping the bubbles.
+        if current_bubble.rect.top <= 0:
+            current_bubble = None
+            fire = False
+    
+    if next_bubble:
+        next_bubble.draw(screen)
+
     pygame.display.update()
 
 pygame.quit()

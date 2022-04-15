@@ -1,3 +1,12 @@
+# Bubble Pop - Part III
+
+A bubble of a randomly chosen color is placed on the arrow and when the spacebar on a keyboard is pressed, the bubble is launched.  If the bubble hits the wall, it rebounds.  As the bubble leaves the top of the screen, the next bubble (waiting on the left side of the arrow) is placed on the arrow.
+
+<p align = "center">
+<image src = "Part_III.gif" title = "Arrow movement." width = 280 height = 450><br>
+</p>
+<br>
+
 # Bubble Pop - Part II
 
 Shooting arrow image is added to the screen and the user can control the arrow with the keyboard.
