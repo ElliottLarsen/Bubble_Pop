@@ -1,3 +1,12 @@
+# Bubble Pop - Part IV
+
+When the new bubble collides with a pre-existing bubble, the new bubble is stopped and placed on the screen.
+
+<p align = "center">
+<image src = "Part_IV.gif" title = "Arrow movement." width = 280 height = 450><br>
+</p>
+<br>
+
 # Bubble Pop - Part III
 
 A bubble of a randomly chosen color is placed on the arrow and when the spacebar on a keyboard is pressed, the bubble is launched.  If the bubble hits the wall, it rebounds.  As the bubble leaves the top of the screen, the next bubble (waiting on the left side of the arrow) is placed on the arrow.

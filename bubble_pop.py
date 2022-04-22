@@ -189,6 +189,42 @@ def get_random_color():
     
     return random.choice(colors)
 
+def collision():
+    """
+    This function places the bubble when it collides with pre-existing bubbles.
+    """
+    global current_bubble, fire
+    hit_bubble = pygame.sprite.spritecollideany(current_bubble, bubble_group, pygame.sprite.collide_mask)
+    if hit_bubble or current_bubble.rect.top <= 0:
+        row_index, column_index = get_map_index(*current_bubble.rect.center)
+        place_bubble(current_bubble, row_index, column_index)
+        current_bubble = None
+        fire = False
+
+def get_map_index(x, y):
+    """
+    This function receives the x and y coordinates (unpacked from a tuple) as parameters and returns the row and column indices.
+    """
+    row_index = y // cell_size
+    column_index = x // cell_size
+    if row_index % 2 == 1:
+        column_index = (x - (cell_size // 2)) // cell_size
+        if column_index < 0:
+            column_index = 0
+        elif column_index > map_column_count - 2:
+            column_index = map_column_count - 2
+
+    return row_index, column_index
+
+def place_bubble(bubble, row_index, column_index):
+    """
+    This function receives the current bubble and row/column indices as parameters and places the bubble on the correct position on the screen.
+    """
+    map[row_index][column_index] = bubble.color
+    position = get_bubble_location(row_index, column_index)
+    bubble.set_rect(position)
+    bubble_group.add(bubble)
+
 #------------------------------------------
 # Set the default environment for the game.
 #------------------------------------------
@@ -233,6 +269,8 @@ bubble_height = 62
 angle_left = 0
 angle_right = 0
 angle_speed = 1.5 # Move the arrow by 1.5 degrees.
+map_row_count = 11
+map_column_count = 8
 
 current_bubble = None # Current bubble placed on the arrow.
 next_bubble = None # Next bubble to be placed on the arrow.
@@ -274,6 +312,9 @@ while condition:
     if not current_bubble:
         setup_bubbles()
 
+    if fire:
+        collision()
+
     # Put the background image at the top left corner.
     screen.blit(background, (0, 0))
     bubble_group.draw(screen)
@@ -286,9 +327,9 @@ while condition:
         current_bubble.draw(screen)
 
         # Needs to be updated after working out popping the bubbles.
-        if current_bubble.rect.top <= 0:
-            current_bubble = None
-            fire = False
+        #if current_bubble.rect.top <= 0:
+        #    current_bubble = None
+        #    fire = False
     
     if next_bubble:
         next_bubble.draw(screen)
