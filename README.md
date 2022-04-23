@@ -1,6 +1,15 @@
+# Bubble Pop - Part V
+
+When a new bubble collides with more than three bubbles of the same color, the bubbles are removed from the screen.
+
+<p align = "center">
+<image src = "Part_V.gif" title = "Arrow movement." width = 280 height = 450><br>
+</p>
+<br>
+
 # Bubble Pop - Part IV
 
-When the new bubble collides with a pre-existing bubble, the new bubble is stopped and placed on the screen.
+When a new bubble collides with pre-existing bubbles, the new bubble is stopped and placed on the screen.
 
 <p align = "center">
 <image src = "Part_IV.gif" title = "Arrow movement." width = 280 height = 450><br>

@@ -11,7 +11,7 @@ class Bubble(pygame.sprite.Sprite):
     """
     Represents a bubble class.
     """
-    def __init__(self, image, color, position = (0, 0)):
+    def __init__(self, image, color, position = (0, 0), row_index = -1, column_index = -1):
         """
         Creates an instance of a bubble.
         """
@@ -20,6 +20,8 @@ class Bubble(pygame.sprite.Sprite):
         self.color = color
         self.rect = image.get_rect(center = position)
         self.radius = 15
+        self.row_index = row_index
+        self.column_index = column_index
 
     def set_rect(self, position):
         """
@@ -53,6 +55,13 @@ class Bubble(pygame.sprite.Sprite):
         # When the bubble hits the wall.
         if self.rect.left < 0 or self.rect.right > screen_width:
             self.set_angle(180 - self.angle)
+
+    def set_map_index(self, row_index, column_index):
+        """
+        Sets the map index.
+        """
+        self.row_index = row_index
+        self.column_index = column_index
 
 class Arrow(pygame.sprite.Sprite):
     """
@@ -117,7 +126,7 @@ def set_map():
                 continue
             location = get_bubble_location(row_index, column_index)
             image = get_bubble_image(column)
-            bubble = Bubble(image, column, location)
+            bubble = Bubble(image, column, location, row_index, column_index)
             bubble_group.add(bubble)
 
 def get_bubble_location(row_index, column_index):
@@ -195,9 +204,11 @@ def collision():
     """
     global current_bubble, fire
     hit_bubble = pygame.sprite.spritecollideany(current_bubble, bubble_group, pygame.sprite.collide_mask)
+    # If the bubble collides with other bubbles or it hits the ceiling.
     if hit_bubble or current_bubble.rect.top <= 0:
         row_index, column_index = get_map_index(*current_bubble.rect.center)
         place_bubble(current_bubble, row_index, column_index)
+        remove_bubbles(row_index, column_index, current_bubble.color)
         current_bubble = None
         fire = False
 
@@ -223,7 +234,52 @@ def place_bubble(bubble, row_index, column_index):
     map[row_index][column_index] = bubble.color
     position = get_bubble_location(row_index, column_index)
     bubble.set_rect(position)
+    bubble.set_map_index(row_index, column_index)
     bubble_group.add(bubble)
+
+
+def remove_bubbles(row_index, column_index, color):
+    """
+    This function receives row index, column index, and color as parameters and deletes bubbles if more than three bubbles of the same color come in contact with the new bubble.
+    """
+    # Reset the visited list.
+    visited.clear() 
+    visit(row_index, column_index, color)
+    # Delete if it collides with at least three bubbles with same color.
+    if len(visited) >= 3:
+        remove_visited()
+
+def visit(row_index, column_index, color):
+    """
+    This function receives row index, column index, and color and parameters and determines which bubbles are visited, much like DFS.
+    """
+    # Check if the bubble tries move out of the map.
+    if row_index < 0 or row_index >= map_row_count or column_index < 0 or column_index >= map_column_count:
+        return
+    # Check if the current cell's color matches the passed color.
+    if map[row_index][column_index] != color:
+        return
+    # If the cell has already been visited.
+    if (row_index, column_index) in visited:
+        return
+    
+    visited.append((row_index, column_index))
+    rows = [0, -1, -1, 0, 1, 1]
+    columns = [-1, -1, 0, 1, 0, -1]
+    if row_index % 2 == 1:
+        rows = [0, -1, -1, 0, 1, 1]
+        columns = [-1, 0, 1, 1, 1, 0]
+    for i in range(len(rows)):
+        visit(row_index + rows[i], column_index + columns[i], color)
+
+def remove_visited():
+    """
+    This function is called from remove_bubbles() and deletes the bubbles from the screen.
+    """
+    bubbles_to_remove = [i for i in bubble_group if (i.row_index, i.column_index) in visited]
+    for bubble in bubbles_to_remove:
+        map[bubble.row_index][bubble.column_index] = "."
+        bubble_group.remove(bubble)
 
 #------------------------------------------
 # Set the default environment for the game.
@@ -277,6 +333,7 @@ next_bubble = None # Next bubble to be placed on the arrow.
 fire = False # Whether the bubble that has been fired is in motion..
 
 map = []
+visited = [] # For remove_bubbles()
 bubble_group = pygame.sprite.Group()
 
 set_map()
