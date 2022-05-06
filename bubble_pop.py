@@ -248,8 +248,9 @@ def remove_bubbles(row_index, column_index, color):
     # Delete if it collides with at least three bubbles with same color.
     if len(visited) >= 3:
         remove_visited()
+        remove_hanging_bubbles()
 
-def visit(row_index, column_index, color):
+def visit(row_index, column_index, color = None):
     """
     This function receives row index, column index, and color and parameters and determines which bubbles are visited, much like DFS.
     """
@@ -257,7 +258,10 @@ def visit(row_index, column_index, color):
     if row_index < 0 or row_index >= map_row_count or column_index < 0 or column_index >= map_column_count:
         return
     # Check if the current cell's color matches the passed color.
-    if map[row_index][column_index] != color:
+    if color is not None and map[row_index][column_index] != color:
+        return
+    # Check if an empty space or there is no bubble.
+    if map[row_index][column_index] in [".", "N"]:
         return
     # If the cell has already been visited.
     if (row_index, column_index) in visited:
@@ -280,6 +284,25 @@ def remove_visited():
     for bubble in bubbles_to_remove:
         map[bubble.row_index][bubble.column_index] = "."
         bubble_group.remove(bubble)
+
+def remove_not_visited():
+    """
+    This function deletes the bubbles that are not included in visited bubble list.
+    """
+    bubbles_to_remove = [i for i in bubble_group if (i.row_index, i.column_index) not in visited]
+    for bubble in bubbles_to_remove:
+        map[bubble.row_index][bubble.column_index] = "."
+        bubble_group.remove(bubble)
+
+def remove_hanging_bubbles():
+    """
+    This function removes bubbles that are hanging below deleted bubbles.
+    """
+    visited.clear()
+    for column_index in range(map_column_count):
+        if map[0][column_index] != ".":
+            visit(0, column_index)
+    remove_not_visited()
 
 #------------------------------------------
 # Set the default environment for the game.
