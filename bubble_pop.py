@@ -29,11 +29,14 @@ class Bubble(pygame.sprite.Sprite):
         """
         self.rect = self.image.get_rect(center = position)
 
-    def draw(self, screen):
+    def draw(self, screen, to_x = None):
         """
-        This method receives screen as parameter and draws the bubble object on the screen.
+        This method receives screen as parameter and draws the bubble object on the screen.  If to_x is 2 (after the fifth bubble is shot), this functio shakes the screen.  After the sixth bubble is shot, the shake becomes stronger.
         """
-        screen.blit(self.image, self.rect)
+        if to_x:
+            screen.blit(self.image, (self.rect.x + to_x, self.rect.y))
+        else:
+            screen.blit(self.image, self.rect)
 
     def set_angle(self, angle):
         """
@@ -202,7 +205,7 @@ def collision():
     """
     This function places the bubble when it collides with pre-existing bubbles.
     """
-    global current_bubble, fire
+    global current_bubble, fire, current_shoot_count
     hit_bubble = pygame.sprite.spritecollideany(current_bubble, bubble_group, pygame.sprite.collide_mask)
     # If the bubble collides with other bubbles or it hits the ceiling.
     if hit_bubble or current_bubble.rect.top <= 0:
@@ -211,6 +214,7 @@ def collision():
         remove_bubbles(row_index, column_index, current_bubble.color)
         current_bubble = None
         fire = False
+        current_shoot_count -= 1
 
 def get_map_index(x, y):
     """
@@ -304,6 +308,18 @@ def remove_hanging_bubbles():
             visit(0, column_index)
     remove_not_visited()
 
+def draw_bubbles():
+    """
+    This function draws bubbles on the screen.  After the fifth bubble has been shot, this function adds to_x to the bubble that will be used to shake the screen.
+    """
+    to_x = None
+    if current_shoot_count == 2:
+        to_x = random.randint(-1, 1)
+    elif current_shoot_count == 1:
+        to_x = random.randint(-4, 4)
+
+    for bubble in bubble_group:
+        bubble.draw(screen, to_x)
 #------------------------------------------
 # Set the default environment for the game.
 #------------------------------------------
@@ -350,10 +366,12 @@ angle_right = 0
 angle_speed = 1.5 # Move the arrow by 1.5 degrees.
 map_row_count = 11
 map_column_count = 8
+shoot_count = 7 # Seven bubbles can be shot before the set lowers.
 
 current_bubble = None # Current bubble placed on the arrow.
 next_bubble = None # Next bubble to be placed on the arrow.
 fire = False # Whether the bubble that has been fired is in motion..
+current_shoot_count = shoot_count
 
 map = []
 visited = [] # For remove_bubbles()
@@ -397,7 +415,8 @@ while condition:
 
     # Put the background image at the top left corner.
     screen.blit(background, (0, 0))
-    bubble_group.draw(screen)
+    #bubble_group.draw(screen)
+    draw_bubbles()
     arrow.rotate(angle_left + angle_right)
     arrow.draw(screen)
     # Draw a bubble on the arrow.
