@@ -66,6 +66,9 @@ class Bubble(pygame.sprite.Sprite):
         self.row_index = row_index
         self.column_index = column_index
 
+    def drop_downward(self, height):
+        self.rect = self.image.get_rect(center = (self.rect.centerx, self.rect.centery + height))
+
 class Arrow(pygame.sprite.Sprite):
     """
     Represents a shooting arrow class.
@@ -137,7 +140,7 @@ def get_bubble_location(row_index, column_index):
     This function receives the row and column indices and returns the bubble's location.
     """
     x_coord = column_index * cell_size + (bubble_width // 2)
-    y_coord = row_index * cell_size + (bubble_height // 2)
+    y_coord = row_index * cell_size + (bubble_height // 2) + wall_height
     # If the bubble is located in the even-numbered rows (or odd=numbered indices), it needs to be offset to the right by half of the bubble width.
     if row_index % 2 == 1:
         x_coord += bubble_width // 2
@@ -208,7 +211,7 @@ def collision():
     global current_bubble, fire, current_shoot_count
     hit_bubble = pygame.sprite.spritecollideany(current_bubble, bubble_group, pygame.sprite.collide_mask)
     # If the bubble collides with other bubbles or it hits the ceiling.
-    if hit_bubble or current_bubble.rect.top <= 0:
+    if hit_bubble or current_bubble.rect.top <= wall_height:
         row_index, column_index = get_map_index(*current_bubble.rect.center)
         place_bubble(current_bubble, row_index, column_index)
         remove_bubbles(row_index, column_index, current_bubble.color)
@@ -220,7 +223,7 @@ def get_map_index(x, y):
     """
     This function receives the x and y coordinates (unpacked from a tuple) as parameters and returns the row and column indices.
     """
-    row_index = y // cell_size
+    row_index = (y - wall_height) // cell_size
     column_index = x // cell_size
     if row_index % 2 == 1:
         column_index = (x - (cell_size // 2)) // cell_size
@@ -320,6 +323,17 @@ def draw_bubbles():
 
     for bubble in bubble_group:
         bubble.draw(screen, to_x)
+
+def drop_wall():
+    """
+    This function lowers the wall after *7 shoots.
+    """
+    global wall_height, current_shoot_count
+    wall_height += cell_size
+    for bubble in bubble_group:
+        bubble.drop_downward(cell_size)
+    current_shoot_count = shoot_count
+
 #------------------------------------------
 # Set the default environment for the game.
 #------------------------------------------
@@ -337,6 +351,7 @@ clock = pygame.time.Clock()
 # Get current directory path.
 path = os.path.dirname(__file__)
 background = pygame.image.load(os.path.join(path, "bg.png"))
+wall = pygame.image.load(os.path.join(path, "wall.png"))
 
 #-----------------
 # Set the bubbles.
@@ -372,6 +387,7 @@ current_bubble = None # Current bubble placed on the arrow.
 next_bubble = None # Next bubble to be placed on the arrow.
 fire = False # Whether the bubble that has been fired is in motion..
 current_shoot_count = shoot_count
+wall_height = 0
 
 map = []
 visited = [] # For remove_bubbles()
@@ -413,8 +429,12 @@ while condition:
     if fire:
         collision()
 
+    if current_shoot_count == 0:
+        drop_wall()
+
     # Put the background image at the top left corner.
     screen.blit(background, (0, 0))
+    screen.blit(wall, (0, wall_height - screen_height))
     #bubble_group.draw(screen)
     draw_bubbles()
     arrow.rotate(angle_left + angle_right)

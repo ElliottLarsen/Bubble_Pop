@@ -1,6 +1,16 @@
+# Bubble Pop - Part VIII
+
+After every 7th shoot, a wall is lowered.
+
+<p align = "center">
+<image src = "Part_VIII.gif" title = "Lowers the wall." width = 280 height = 450><br>
+</p>
+<br>
+
+
 # Bubble Pop - Part VII
 
-The user gets 7 shots per each round before the wall starts coming down.  As the last two shots are fired, the screen starts to shake. 
+The user gets 7 shots per each round before the wall starts coming down.  As the last two shots are fired, the screen starts to shake.
 
 <p align = "center">
 <image src = "Part_VII.gif" title = "Shake the screen." width = 280 height = 450><br>
