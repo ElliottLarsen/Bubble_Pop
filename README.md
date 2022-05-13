@@ -3,7 +3,7 @@
 After every 7th shoot, a wall is lowered.
 
 <p align = "center">
-<image src = "Part_VIII.gif" title = "Lowers the wall." width = 280 height = 450><br>
+<image src = "gifs/Part_VIII.gif" title = "Lowers the wall." width = 280 height = 450><br>
 </p>
 <br>
 
@@ -13,7 +13,7 @@ After every 7th shoot, a wall is lowered.
 The user gets 7 shots per each round before the wall starts coming down.  As the last two shots are fired, the screen starts to shake.
 
 <p align = "center">
-<image src = "Part_VII.gif" title = "Shake the screen." width = 280 height = 450><br>
+<image src = "gifs/Part_VII.gif" title = "Shake the screen." width = 280 height = 450><br>
 </p>
 <br>
 
@@ -22,7 +22,7 @@ The user gets 7 shots per each round before the wall starts coming down.  As the
 Any hanging bubbles (after deleting bubbles) are also removed.
 
 <p align = "center">
-<image src = "Part_VI.gif" title = "Hanging bubbles are removed." width = 280 height = 450><br>
+<image src = "gifs/Part_VI.gif" title = "Hanging bubbles are removed." width = 280 height = 450><br>
 </p>
 <br>
 
@@ -31,7 +31,7 @@ Any hanging bubbles (after deleting bubbles) are also removed.
 When a new bubble collides with more than three bubbles of the same color, the bubbles are removed from the screen.
 
 <p align = "center">
-<image src = "Part_V.gif" title = "Bubble popped." width = 280 height = 450><br>
+<image src = "gifs/Part_V.gif" title = "Bubble popped." width = 280 height = 450><br>
 </p>
 <br>
 
@@ -40,7 +40,7 @@ When a new bubble collides with more than three bubbles of the same color, the b
 When a new bubble collides with pre-existing bubbles, the new bubble is stopped and placed on the screen.
 
 <p align = "center">
-<image src = "Part_IV.gif" title = "Bubble stops." width = 280 height = 450><br>
+<image src = "gifs/Part_IV.gif" title = "Bubble stops." width = 280 height = 450><br>
 </p>
 <br>
 
@@ -49,7 +49,7 @@ When a new bubble collides with pre-existing bubbles, the new bubble is stopped 
 A bubble of a randomly chosen color is placed on the arrow and when the spacebar on a keyboard is pressed, the bubble is launched.  If the bubble hits the wall, it rebounds.  As the bubble leaves the top of the screen, the next bubble (waiting on the left side of the arrow) is placed on the arrow.
 
 <p align = "center">
-<image src = "Part_III.gif" title = "Bubble shoots." width = 280 height = 450><br>
+<image src = "gifs/Part_III.gif" title = "Bubble shoots." width = 280 height = 450><br>
 </p>
 <br>
 
@@ -58,7 +58,7 @@ A bubble of a randomly chosen color is placed on the arrow and when the spacebar
 Shooting arrow image is added to the screen and the user can control the arrow with the keyboard.
 
 <p align = "center">
-<image src = "Part_II.gif" title = "Arrow movement." width = 280 height = 450><br>
+<image src = "gifs/Part_II.gif" title = "Arrow movement." width = 280 height = 450><br>
 </p>
 <br>
 
@@ -67,7 +67,7 @@ Shooting arrow image is added to the screen and the user can control the arrow w
 Background image is added to the frame and bubble of different colors are mapped/placed on the screen.  
 
 <p align = "center">
-<image src = "Part_I.png" title = "Background and bubbles." width = 280 height = 450><br>
+<image src = "gifs/Part_I.png" title = "Background and bubbles." width = 280 height = 450><br>
 </p>
 <br>
 <h3 align = "right"> Elliott Larsen </h3>

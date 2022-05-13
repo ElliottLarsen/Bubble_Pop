@@ -334,6 +334,28 @@ def drop_wall():
         bubble.drop_downward(cell_size)
     current_shoot_count = shoot_count
 
+def get_bottom_bubble_position():
+    """
+    This function is used to determine whether the game is lost.  It returns the location of the bottom bubble.
+    """
+    bottom_bubbles = [bubble.rect.bottom for bubble in bubble_group]
+    return max(bottom_bubbles)
+
+def lost_bubbles(image):
+    """
+    This function is called when the game is lost and turns all the remaining bubbles to black.
+    """
+    for bubble in bubble_group:
+        bubble.image = image
+
+def display_game_status():
+    """
+    This function shows the game status message when the game is over.
+    """
+    game_status_message = font.render(game_status, True, status_message_color)
+    rect_game_status = game_status_message.get_rect(center = (screen_width // 2, screen_height // 2))
+    screen.blit(game_status_message, rect_game_status)
+
 #------------------------------------------
 # Set the default environment for the game.
 #------------------------------------------
@@ -350,32 +372,33 @@ clock = pygame.time.Clock()
 #--------------------
 # Get current directory path.
 path = os.path.dirname(__file__)
-background = pygame.image.load(os.path.join(path, "bg.png"))
-wall = pygame.image.load(os.path.join(path, "wall.png"))
+background = pygame.image.load(os.path.join(path, "img_assets/bg.png"))
+wall = pygame.image.load(os.path.join(path, "img_assets/wall.png"))
 
 #-----------------
 # Set the bubbles.
 #-----------------
 # List of bubble images.
 bubble_images = [
-    pygame.image.load(os.path.join(path, "black.png")).convert_alpha(),
-    pygame.image.load(os.path.join(path, "blue.png")).convert_alpha(),
-    pygame.image.load(os.path.join(path, "green.png")).convert_alpha(),
-    pygame.image.load(os.path.join(path, "purple.png")).convert_alpha(),
-    pygame.image.load(os.path.join(path, "red.png")).convert_alpha(),
-    pygame.image.load(os.path.join(path, "yellow.png")).convert_alpha()
+    pygame.image.load(os.path.join(path, "img_assets/black.png")).convert_alpha(),
+    pygame.image.load(os.path.join(path, "img_assets/blue.png")).convert_alpha(),
+    pygame.image.load(os.path.join(path, "img_assets/green.png")).convert_alpha(),
+    pygame.image.load(os.path.join(path, "img_assets/purple.png")).convert_alpha(),
+    pygame.image.load(os.path.join(path, "img_assets/red.png")).convert_alpha(),
+    pygame.image.load(os.path.join(path, "img_assets/yellow.png")).convert_alpha()
 ]
 
 #------------------------
 # Set the shooting arrow.
 #------------------------
-bubble_arrow = pygame.image.load(os.path.join(path, "arrow.png"))
+bubble_arrow = pygame.image.load(os.path.join(path, "img_assets/arrow.png"))
 arrow = Arrow(bubble_arrow, (screen_width // 2, 624), 90)
 
 # Variables/assets/info for the game.
 cell_size = 56
 bubble_width = 56
 bubble_height = 62
+status_message_color = (255, 255, 255)
 angle_left = 0
 angle_right = 0
 angle_speed = 1.5 # Move the arrow by 1.5 degrees.
@@ -388,6 +411,9 @@ next_bubble = None # Next bubble to be placed on the arrow.
 fire = False # Whether the bubble that has been fired is in motion..
 current_shoot_count = shoot_count
 wall_height = 0
+game_over = False
+font = pygame.font.SysFont('garamond', 40)
+game_status = None
 
 map = []
 visited = [] # For remove_bubbles()
@@ -432,6 +458,16 @@ while condition:
     if current_shoot_count == 0:
         drop_wall()
 
+    if not bubble_group:
+        game_status = "You Won!"
+        game_over = True
+
+    elif get_bottom_bubble_position() > len(map) * cell_size:
+        game_status = "You Lost!"
+        game_over = True    
+        lost_bubbles(bubble_images[0])
+
+
     # Put the background image at the top left corner.
     screen.blit(background, (0, 0))
     screen.blit(wall, (0, wall_height - screen_height))
@@ -453,6 +489,11 @@ while condition:
     if next_bubble:
         next_bubble.draw(screen)
 
+    if game_over:
+        display_game_status()
+        condition = False
+
     pygame.display.update()
 
+pygame.time.delay(2000)
 pygame.quit()
