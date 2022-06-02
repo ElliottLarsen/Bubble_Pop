@@ -1,6 +1,6 @@
 # Author: Elliott Larsen
-# Date:
-# Description: 
+# Date: 6/1/2022
+# Description: A bubble shooting game using Pygame.
 
 import os
 import pygame
