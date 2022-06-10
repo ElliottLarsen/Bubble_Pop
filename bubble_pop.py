@@ -6,7 +6,11 @@ import os
 import pygame
 import random
 import math
+from Bubble import *
+from Arrow import *
+from assets import *
 
+'''
 class Bubble(pygame.sprite.Sprite):
     """
     Represents a bubble class.
@@ -68,7 +72,9 @@ class Bubble(pygame.sprite.Sprite):
 
     def drop_downward(self, height):
         self.rect = self.image.get_rect(center = (self.rect.centerx, self.rect.centery + height))
+'''
 
+'''
 class Arrow(pygame.sprite.Sprite):
     """
     Represents a shooting arrow class.
@@ -103,6 +109,7 @@ class Arrow(pygame.sprite.Sprite):
 
         self.image = pygame.transform.rotozoom(self.original, self.angle, 1)
         self.rect = self.image.get_rect(center = self.position)
+'''
         
 def set_map():
     """
@@ -361,8 +368,8 @@ def display_game_status():
 #------------------------------------------
 pygame.init()
 # Set the screen size.
-screen_width = 448
-screen_height = 720
+#screen_width = 448
+#screen_height = 720
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Bubble Pop")
 clock = pygame.time.Clock()
@@ -395,16 +402,16 @@ bubble_arrow = pygame.image.load(os.path.join(path, "img_assets/arrow.png"))
 arrow = Arrow(bubble_arrow, (screen_width // 2, 624), 90)
 
 # Variables/assets/info for the game.
-cell_size = 56
-bubble_width = 56
-bubble_height = 62
-status_message_color = (255, 255, 255)
-angle_left = 0
-angle_right = 0
-angle_speed = 1.5 # Move the arrow by 1.5 degrees.
-map_row_count = 11
-map_column_count = 8
-shoot_count = 7 # Seven bubbles can be shot before the set lowers.
+#cell_size = 56
+#bubble_width = 56
+#bubble_height = 62
+#status_message_color = (255, 255, 255)
+#angle_left = 0
+#angle_right = 0
+#angle_speed = 1.5 # Move the arrow by 1.5 degrees.
+#map_row_count = 11
+#map_column_count = 8
+#shoot_count = 7 # Seven bubbles can be shot before the set lowers.
 
 current_bubble = None # Current bubble placed on the arrow.
 next_bubble = None # Next bubble to be placed on the arrow.
