@@ -9,107 +9,6 @@ import math
 from Bubble import *
 from Arrow import *
 from assets import *
-
-'''
-class Bubble(pygame.sprite.Sprite):
-    """
-    Represents a bubble class.
-    """
-    def __init__(self, image, color, position = (0, 0), row_index = -1, column_index = -1):
-        """
-        Creates an instance of a bubble.
-        """
-        super().__init__()
-        self.image = image
-        self.color = color
-        self.rect = image.get_rect(center = position)
-        self.radius = 15
-        self.row_index = row_index
-        self.column_index = column_index
-
-    def set_rect(self, position):
-        """
-        This method receives position as parameter and sets the class's rect to it.
-        """
-        self.rect = self.image.get_rect(center = position)
-
-    def draw(self, screen, to_x = None):
-        """
-        This method receives screen as parameter and draws the bubble object on the screen.  If to_x is 2 (after the fifth bubble is shot), this functio shakes the screen.  After the sixth bubble is shot, the shake becomes stronger.
-        """
-        if to_x:
-            screen.blit(self.image, (self.rect.x + to_x, self.rect.y))
-        else:
-            screen.blit(self.image, self.rect)
-
-    def set_angle(self, angle):
-        """
-        This method receives an angle as parameter and sets the bubble's angle to it (radian).
-        """
-        self.angle = angle
-        self.rad_angle = math.radians(self.angle)
-
-    def move(self):
-        """
-        This method calculates and sets x and y coordinates of the bubble.
-        """
-        x_coord = self.radius * math.cos(self.rad_angle)
-        y_coord = self.radius * math.sin(self.rad_angle) * -1
-
-        self.rect.x += x_coord
-        self.rect.y += y_coord
-
-        # When the bubble hits the wall.
-        if self.rect.left < 0 or self.rect.right > screen_width:
-            self.set_angle(180 - self.angle)
-
-    def set_map_index(self, row_index, column_index):
-        """
-        Sets the map index.
-        """
-        self.row_index = row_index
-        self.column_index = column_index
-
-    def drop_downward(self, height):
-        self.rect = self.image.get_rect(center = (self.rect.centerx, self.rect.centery + height))
-'''
-
-'''
-class Arrow(pygame.sprite.Sprite):
-    """
-    Represents a shooting arrow class.
-    """
-    def __init__(self, image, position, angle):
-        """
-        Creates an instance of a shooting arrow.
-        """
-        super().__init__()
-        self.image = image
-        self.rect = image.get_rect(center = position)
-        self.angle = angle
-        self.original = image
-        self.position = position
-
-    def draw(self, screen):
-        """
-        This method receives screen as parameter and draws the arrow object on the screen.
-        """
-        screen.blit(self.image, self.rect)
-
-    def rotate(self, angle):
-        """
-        This method receives angle as parameter and rotates the arrow.
-        """
-        self.angle += angle
-        
-        if self.angle > 150:
-            self.angle = 150
-        elif self.angle < 30:
-            self.angle = 30
-
-        self.image = pygame.transform.rotozoom(self.original, self.angle, 1)
-        self.rect = self.image.get_rect(center = self.position)
-'''
         
 def set_map():
     """
@@ -367,9 +266,6 @@ def display_game_status():
 # Set the default environment for the game.
 #------------------------------------------
 pygame.init()
-# Set the screen size.
-#screen_width = 448
-#screen_height = 720
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Bubble Pop")
 clock = pygame.time.Clock()
@@ -401,30 +297,8 @@ bubble_images = [
 bubble_arrow = pygame.image.load(os.path.join(path, "img_assets/arrow.png"))
 arrow = Arrow(bubble_arrow, (screen_width // 2, 624), 90)
 
-# Variables/assets/info for the game.
-#cell_size = 56
-#bubble_width = 56
-#bubble_height = 62
-#status_message_color = (255, 255, 255)
-#angle_left = 0
-#angle_right = 0
-#angle_speed = 1.5 # Move the arrow by 1.5 degrees.
-#map_row_count = 11
-#map_column_count = 8
-#shoot_count = 7 # Seven bubbles can be shot before the set lowers.
 
-current_bubble = None # Current bubble placed on the arrow.
-next_bubble = None # Next bubble to be placed on the arrow.
-fire = False # Whether the bubble that has been fired is in motion..
-current_shoot_count = shoot_count
-wall_height = 0
-game_over = False
 font = pygame.font.SysFont('garamond', 40)
-game_status = None
-
-map = []
-visited = [] # For remove_bubbles()
-bubble_group = pygame.sprite.Group()
 
 set_map()
 condition = True
