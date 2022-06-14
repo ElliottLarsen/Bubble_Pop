@@ -1,6 +1,6 @@
 # Author: Elliott Larsen
-# Date:
-# Description:
+# Date: 6/14/2022
+# Description: Arrow class.
 
 import pygame
 from assets import *

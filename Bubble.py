@@ -1,6 +1,6 @@
 # Author: Elliott Larsen
-# Date:
-# Description:
+# Date: 6/14/2022
+# Description: Bubble class.
 
 import pygame
 import math

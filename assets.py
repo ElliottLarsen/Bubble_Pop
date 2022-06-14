@@ -1,8 +1,7 @@
 # Author: Elliott Larsen
-# Date:
-# Description:
+# Date: 6/14/2022
+# Description: Collection of Bubble Pop assets/variables.
 
-import os
 import pygame
 
 screen_width = 448

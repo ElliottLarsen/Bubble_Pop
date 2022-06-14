@@ -5,7 +5,6 @@
 import os
 import pygame
 import random
-import math
 from Bubble import *
 from Arrow import *
 from assets import *
