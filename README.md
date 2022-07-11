@@ -12,7 +12,6 @@ This is a bubble shooting game written in Python with a GUI.  Trigonometry and D
 <p>
 <image src = "gifs/game_won.gif" title = "Hanging bubbles are removed." width = 280 height = 450><br>
 </p>
-<br>
 
 ### Game Lost
 <p>
